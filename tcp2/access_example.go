@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"gframe-ants-tcp/tcp2/server/client"
+	"gframe-ants-tcp/tcp2/client"
 )
 
 // 示例：从程序任意一处访问客户端管理器

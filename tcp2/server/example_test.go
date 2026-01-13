@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
-	"gframe-ants-tcp/tcp2/server/client"
+	"gframe-ants-tcp/tcp2/client"
 	"testing"
 	"time"
 )
 
-// 示例：展示如何在程序任意一处访问客户端管理器
-// 只需导入 "gframe-ants-tcp/tcp2/server/client" 包即可使用 client.GlobalManager
-func ExampleAccessClients(t *testing.T) {
+// TestAccessClients 测试：展示如何在程序任意一处访问客户端管理器
+// 只需导入 "gframe-ants-tcp/tcp2/client" 包即可使用 client.GlobalManager
+func TestAccessClients(t *testing.T) {
 	// 1. 获取所有客户端
 	clients := client.GlobalManager.GetAllClients()
 	fmt.Printf("当前连接的客户端数量: %d\n", len(clients))
@@ -33,4 +33,18 @@ func ExampleAccessClients(t *testing.T) {
 
 	// 5. 广播消息给所有客户端
 	client.GlobalManager.Broadcast("广播消息: " + time.Now().Format("2006-01-02 15:04:05") + "\n")
+}
+
+// Example 包级别示例：展示如何在程序任意一处访问客户端管理器
+func Example() {
+	// 获取所有客户端
+	clients := client.GlobalManager.GetAllClients()
+	fmt.Printf("当前连接的客户端数量: %d\n", len(clients))
+
+	// 获取客户端总数
+	count := client.GlobalManager.GetClientCount()
+	fmt.Printf("当前活跃客户端数: %d\n", count)
+
+	// 广播消息给所有客户端
+	client.GlobalManager.Broadcast("广播消息\n")
 }
