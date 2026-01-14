@@ -2,7 +2,10 @@ package main
 
 import (
 	"fmt"
+	"time"
+
 	"gframe-ants-tcp/pool"
+	"gframe-ants-tcp/tcp/client"
 )
 
 func main() {
@@ -15,14 +18,26 @@ func main() {
 
 	fmt.Printf("协程池初始化成功，容量: %d\n", pool.Cap())
 
-	// 示例：使用协程池执行任务
-	for index, item := range []int{1, 2, 3, 4, 5, 6} {
-		if item == 4 {
-			continue
-		}
-		// 使用协程池提交任务
-		pool.Submit(func() {
-			fmt.Printf("第%d个元素的值是: %d\n", index, item)
-		})
+	// 初始化TCP服务器
+	// tcpServer := server.NewServer()
+	// go func() {
+	// 	err := tcpServer.Start(":8080")
+	// 	if err != nil {
+	// 		fmt.Printf("启动TCP服务器失败: %v\n", err)
+	// 	}
+	// }()
+	// defer tcpServer.Stop()
+
+	// 等待服务器启动
+	time.Sleep(1 * time.Second)
+
+	// 初始化TCP客户端
+	tcpClient := client.NewClient("8.135.10.183:30558")
+	err = tcpClient.Connect()
+	if err != nil {
+		fmt.Printf("连接到服务器失败: %v\n", err)
+		return
 	}
+	defer tcpClient.Close()
+	time.Sleep(1000 * time.Second)
 }
