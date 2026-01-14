@@ -11,7 +11,7 @@ import (
 
 var wg sync.WaitGroup
 
-func Test_tt1(t *testing.T) {
+func TestChan0(t *testing.T) {
 	err := pool.InitPool(100)
 	if err != nil {
 		panic(fmt.Sprintf("初始化协程池失败: %v", err))
@@ -49,7 +49,7 @@ func Test_tt1(t *testing.T) {
 	// time.Sleep(100 * time.Second) // 等待足够的时间让所有定时器触发
 }
 
-func Test_chan(t *testing.T) {
+func TestChan1(t *testing.T) {
 	cn := make(chan int, 10)
 	wg.Add(10) // 添加等待计数，对应10个goroutine
 
@@ -85,4 +85,39 @@ func Test_chan(t *testing.T) {
 	wg.Wait()
 	close(cn)
 	time.Sleep(100 * time.Second)
+}
+
+func TestChan2(t *testing.T) {
+	var a = make(chan int, 10)
+	defer close(a)
+	var wg sync.WaitGroup
+	for v := range 10 {
+		a <- v
+	}
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		select {
+		case a <- 1:
+			fmt.Println("设置值 1")
+		default:
+			fmt.Println("未设置值")
+		}
+	}()
+
+	go func() {
+		defer func() {
+			wg.Done()
+		}()
+		for {
+			select {
+			case v := <-a:
+				fmt.Println("v:", v)
+			case <-time.After(3 * time.Second):
+				fmt.Println("超时")
+				return
+			}
+		}
+	}()
+	wg.Wait()
 }
