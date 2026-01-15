@@ -46,7 +46,7 @@ func (c *Client) Connect() error {
 
 	// 启动监听协程
 	pool.Submit(func() {
-		c.listenMessages()
+		c.onMessage()
 	})
 
 	return nil
@@ -73,7 +73,7 @@ func (c *Client) sendMessage(message string) {
 	// 启动超时检查
 	pool.Submit(func() {
 		select {
-		case <-time.After(50 * time.Second):
+		case <-time.After(5 * time.Second):
 			fmt.Println("发送消息后5秒内未收到回复，断开连接")
 		case <-c.timeoutCh:
 			// 收到消息，取消超时
@@ -81,14 +81,15 @@ func (c *Client) sendMessage(message string) {
 	})
 }
 
-// listenMessages 监听服务器消息
-func (c *Client) listenMessages() {
+// onMessage 监听服务器消息
+func (c *Client) onMessage() {
 	defer c.disconnect()
 	reader := bufio.NewReader(c.conn)
+	fmt.Println("running:", c.running)
 	for c.running {
 		// 设置读取超时
 		// c.conn.SetReadDeadline(time.Now().Add(10 * time.Second))
-		message, err := reader.ReadBytes('\n')
+		message, err := reader.ReadString('\n')
 		fmt.Println("msg==================", message)
 		if err != nil {
 			if err == io.EOF {
@@ -102,7 +103,6 @@ func (c *Client) listenMessages() {
 		// message = strings.TrimSpace(string(message))
 		fmt.Printf("收到服务器消息: %s\n", strings.TrimSpace(string(message)))
 
-		// 通知超时检查收到消息
 		select {
 		case c.timeoutCh <- true:
 		default:
