@@ -12,6 +12,9 @@ import (
 	"time"
 )
 
+type TcpClients struct {
+}
+
 type Action = string
 
 const (
