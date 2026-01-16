@@ -1,25 +1,15 @@
-package ticker_test
+package main
 
 import (
-	"sync"
+	"fmt"
 	"time"
 )
 
-type Worker struct {
-	ticker *time.Ticker
-	GoFunc
-}
-
-type GoFunc struct {
-	swg sync.WaitGroup
-}
-
-func (w *Worker) New(duration time.Duration, f func()) {
-	w.ticker = time.NewTicker(duration)
+func main() {
 	select {
-	case v := <-w.ticker.C:
-		go func(params time.Time) {
-
-		}(v)
+	case <-time.After(3 * time.Second):
+		fmt.Println("超时")
+	default:
 	}
+	time.Sleep(time.Second * 10)
 }
