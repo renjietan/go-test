@@ -1,4 +1,4 @@
-package main
+package test_case
 
 import (
 	"fmt"
@@ -46,7 +46,7 @@ func TestChan0(t *testing.T) {
 			}
 		})
 	}
-	// time.Sleep(100 * time.Second) // 等待足够的时间让所有定时器触发
+	time.Sleep(100 * time.Second)
 }
 
 func TestChan1(t *testing.T) {
