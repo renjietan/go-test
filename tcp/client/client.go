@@ -21,7 +21,7 @@ type Client struct {
 	timeoutCh  chan bool // 超时通道
 }
 
-// NewClient 创建新的TCP客户端
+// 创建新的TCP客户端, 防止调用时，初始化方式不一致
 func NewClient(serverAddr string) *Client {
 	return &Client{
 		serverAddr: serverAddr,
@@ -29,7 +29,7 @@ func NewClient(serverAddr string) *Client {
 	}
 }
 
-// Connect 连接到服务器
+// 连接到服务器
 func (c *Client) Connect() error {
 	var err error
 	c.conn, err = net.Dial("tcp", c.serverAddr)
@@ -52,7 +52,7 @@ func (c *Client) Connect() error {
 	return nil
 }
 
-// sendMessage 发送消息
+// 发送消息
 func (c *Client) sendMessage(message string) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
@@ -81,7 +81,7 @@ func (c *Client) sendMessage(message string) {
 	})
 }
 
-// onMessage 监听服务器消息
+// 监听服务器消息
 func (c *Client) onMessage() {
 	defer c.disconnect()
 	reader := bufio.NewReader(c.conn)
@@ -132,14 +132,14 @@ func (c *Client) disconnect() {
 	}
 }
 
-// IsConnected 检查是否连接
+// 检查是否连接
 func (c *Client) IsConnected() bool {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	return c.running && c.conn != nil
 }
 
-// Close 关闭客户端连接
+// 关闭客户端连接
 func (c *Client) Close() {
 	c.disconnect()
 }

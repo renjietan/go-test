@@ -8,7 +8,7 @@ import (
 
 func TestPtr(t *testing.T) {
 	// 查看几个指针地址
-	vars := []interface{}{1, "hello", 3.14, true}
+	vars := []interface{}{}
 
 	for i, v := range vars {
 		// 每个变量都有不同的地址

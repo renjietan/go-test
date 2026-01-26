@@ -5,62 +5,48 @@ import (
 	"unsafe"
 )
 
-// 解析固定格式的数据包
-type PacketHeader struct {
-	Version   uint16
-	Length    uint16
-	Timestamp uint32
-	Checksum  uint32
-}
-
-// 使用显式类型转换
-func parsePacket1(data []byte) (*PacketHeader, error) {
-	// uintptr 转 int 然后再进行进行比较
-	headerSize := int(unsafe.Sizeof(PacketHeader{}))
-	if len(data) < headerSize {
-		return nil, fmt.Errorf("数据包太小：需要 %d 字节，实际只有 %d 字节",
-			headerSize, len(data))
-	}
-
-	// 零拷贝解析：直接解释内存
-	header := (*PacketHeader)(unsafe.Pointer(&data[0]))
-	return header, nil
-}
-
-// 使用 uintptr 比较（需要转换 len）
-func parsePacket2(data []byte) (*PacketHeader, error) {
-	if uintptr(len(data)) < unsafe.Sizeof(PacketHeader{}) {
-		return nil, fmt.Errorf("数据包太小")
-	}
-
-	header := (*PacketHeader)(unsafe.Pointer(&data[0]))
-	return header, nil
+type Ss struct {
+	Name string
 }
 
 func main() {
-	// 测试数据
-	data := make([]byte, unsafe.Sizeof(PacketHeader{}))
-	fmt.Println("测试数据:", data)
 
-	// 填充测试数据
-	header := (*PacketHeader)(unsafe.Pointer(&data[0]))
-	header.Version = 1
-	header.Length = uint16(len(data))
-	header.Timestamp = 1234567890
-	header.Checksum = 0xDEADBEEF
-
-	// 测试解析
-	parsed, err := parsePacket1(data)
-	fmt.Println("\n测试正常数据包:", parsed)
-	if err != nil {
-		fmt.Println("错误:", err)
-	} else {
-		fmt.Printf("解析成功: Version=%d, Length=%d, Timestamp=%d, Checksum=0x%x\n",
-			parsed.Version, parsed.Length, parsed.Timestamp, parsed.Checksum)
+	a := make([]interface{}, 2)
+	// a = append(a, 1)
+	// a = append(a, "2")
+	// a = append(a, map[string]string{
+	// 	"3": "3",
+	// })
+	fmt.Println("容量:", cap(a))
+	a[0] = 1
+	a[1] = 2
+	a = append(a, "3")
+	a = append(a, map[string]string{
+		"4": "4",
+	})
+	a = append(a, map[string]string{
+		"5": "6",
+	})
+	a = append(a, map[string]string{
+		"6": "6",
+	})
+	fmt.Println("容量:", cap(a))
+	for index, v := range a {
+		cc := uintptr(unsafe.Pointer(&v))
+		fmt.Printf("%d v1: %v, 指针: %p  指针2: %#016x  指针3: %v \n", index, v, &v, &v, cc)
 	}
-
-	// 测试太小的数据包
-	smallData := make([]byte, 4)
-	_, err = parsePacket1(smallData)
-	fmt.Println("\n测试小数据包:", err)
+	var b = make([]int, 3)
+	b[0] = 1
+	b[1] = 2
+	b[2] = 3
+	for index, v := range b {
+		cc := uintptr(unsafe.Pointer(&v))
+		fmt.Printf("%d b1: %v, 指针: %p  指针2: %#016x  指针3: %v \n", index, v, &v, &v, cc)
+	}
+	var aa = 1
+	var bb = "2"
+	var cc = "4"
+	fmt.Printf("v1: %v, 指针: %p  指针2: %#016x  指针3: %v\n", aa, &aa, &aa, uintptr(unsafe.Pointer(&aa)))
+	fmt.Printf("v1: %v, 指针: %p  指针2: %#016x  指针3: %v\n", bb, &bb, &bb, uintptr(unsafe.Pointer(&bb))-uintptr(unsafe.Pointer(&aa)))
+	fmt.Printf("v1: %v, 指针: %p  指针2: %#016x  指针3: %v\n", cc, &cc, &cc, uintptr(unsafe.Pointer(&cc))-uintptr(unsafe.Pointer(&bb)))
 }

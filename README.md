@@ -1,0 +1,63 @@
+- gvm / g
+    - `g` | `gvm`常用命令
+- go 包管理器
+    - go 包管理命令
+    - 别名
+    - 插件:  `go tools`
+- 数据类型
+    - `const 计数器`
+    - 值类型：`int string float`等等
+    - 引用类型
+        - `map`
+        - `slice`
+            - 多维数组
+        - 结构体
+        - 容量、扩容规则（打印）
+    - 默认值
+- 私有公有
+- 包
+    - 声明 & 目录
+- 打印
+    - 常用打印
+    - `Sprintf`
+    - `switch` 判断类型 + 断言
+- 函数
+    - 常规
+        - 参数 & 返回
+    - 生命周期
+    - 泛型
+    - 特殊函数-init
+    - defer
+    - recover / panic
+    - 当前日期
+    - 定时 time.NewTicker() -> time.C
+    - 延时（time.After / time.AfterFunc / time.Sleep）
+- goto
+- 指针
+    - 常规
+    - 内存地址-连续变量
+    - 字节验证
+- 结构体
+    - 工具封装
+    - 父子类
+    - 初始化(3)
+    - 字符串 与 结构体互转
+    - 元数据
+    - 泛型
+- 枚举
+- interface
+    - 联合接口 + 函数声明
+    - 结构体 + 接口实现 + 断言
+- 反射
+- 协程
+    - 特性
+    - chan（CSP）
+        - 读取/写入（select / for range / close）
+    - 锁
+    - 插件 mingw
+    - 原子
+    - sync.Map
+    - 锁
+    - 定时
+    - 延时
+    - tcp-client
